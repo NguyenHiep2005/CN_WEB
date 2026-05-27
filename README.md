@@ -1,0 +1,660 @@
+# Web Shoe - Nền Tảng Bán Giày Thể Thao Online
+
+## Mục Lục
+
+- [Giới Thiệu](#giới-thiệu)
+- [Tính Năng](#tính-năng)
+- [Yêu Cầu Hệ Thống](#yêu-cầu-hệ-thống)
+- [Cài Đặt & Chạy Ứng Dụng](#cài-đặt--chạy-ứng-dụng)
+- [Cấu Trúc Dự Án](#cấu-trúc-dự-án)
+- [Công Nghệ Sử Dụng](#công-nghệ-sử-dụng)
+- [Cấu Hình Môi Trường](#cấu-hình-môi-trường)
+- [API Endpoints](#api-endpoints)
+- [Docker](#docker)
+- [Hướng Dẫn Chạy Nhanh](#hướng-dẫn-chạy-nhanh)
+
+- [Xử Lý Sự Cố](#xử-lý-sự-cố)
+
+## Giới Thiệu
+
+**Web Shoe** là một nền tảng thương mại điện tử hiện đại dành cho bán lẻ giày thể thao. Ứng dụng được xây dựng theo **mô hình Client-Server** với Frontend và Backend tách rời hoàn toàn, cho phép quản lý sản phẩm, người dùng, đơn hàng và thanh toán một cách hiệu quả và dễ bảo trì.
+
+## Tính Năng
+
+### Người Dùng
+
+Các tính năng cơ bản dành cho khách hàng bao gồm:
+- Đăng ký và đăng nhập tài khoản
+- Quên mật khẩu và đặt lại mật khẩu
+- Xem và chỉnh sửa thông tin cá nhân
+- Tạo danh sách yêu thích (Wishlist)
+
+### Mua Sắm
+
+Khách hàng có thể thực hiện các tác vụ sau:
+- Duyệt sản phẩm theo danh mục khác nhau
+- Tìm kiếm và lọc sản phẩm theo tiêu chí
+- Xem chi tiết thông tin sản phẩm
+- Thêm sản phẩm vào giỏ hàng
+- Quản lý giỏ hàng (cập nhật số lượng, xóa sản phẩm)
+
+### Thanh Toán
+
+Hệ thống thanh toán bao gồm:
+- Thanh toán qua VNPay hỗ trợ Internet Banking
+- Xem lịch sử đơn hàng và các giao dịch
+- Theo dõi trạng thái đơn hàng từ lúc đặt đến giao
+- Xác nhận thanh toán và nhận thông báo
+
+### Admin Dashboard
+
+Các tính năng quản trị dành cho nhân viên:
+- Quản lý sản phẩm với khả năng thêm, sửa, xóa
+- Quản lý danh mục sản phẩm
+- Quản lý tài khoản người dùng
+- Quản lý đơn hàng và cập nhật trạng thái
+- Thống kê doanh thu và lượng bán hàng
+- Hiển thị biểu đồ phân tích trực quan
+
+### Tính Năng Bổ Sung
+
+- Chatbot hỗ trợ khách hàng tích hợp Google Generative AI
+- Gửi email thông báo cho khách hàng
+- Thông báo real-time bằng Socket.io
+
+## Yêu Cầu Hệ Thống
+
+### Bắt Buộc
+
+Để chạy dự án Web Shoe, bạn cần chuẩn bị các công cụ và phần mềm sau:
+
+- **Node.js** phiên bản 14 trở lên
+- **npm** phiên bản 6 trở lên hoặc **yarn**
+- **MongoDB** (có thể cài đặt local hoặc sử dụng MongoDB Atlas trên cloud)
+
+### Tùy Chọn
+
+Các công cụ này giúp phát triển và triển khai dễ dàng hơn nhưng không bắt buộc:
+- **Docker** để chạy ứng dụng trong container
+- **Git** để clone và quản lý mã nguồn
+
+## Cài Đặt & Chạy Ứng Dụng
+
+### Bước 1: Clone Repository
+
+Sử dụng lệnh Git để tải mã nguồn về máy tính:
+
+```bash
+git clone <repository-url>
+cd web_shoe
+```
+
+### Bước 2: Cài Đặt Backend
+
+Trước tiên, vào thư mục server và cài đặt các dependencies:
+
+```bash
+cd server
+npm install
+```
+
+**Tạo file `.env` trong thư mục `server/`:**
+
+Bạn cần tạo một file `.env` chứa các biến cấu hình môi trường:
+
+```env
+# Cấu hình Server
+PORT=5000
+NODE_ENV=development
+
+# Kết nối MongoDB
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/web_shoe
+# Nếu chạy local: mongodb://localhost:27017/web_shoe
+
+# JWT Secret
+JWT_SECRET=your_jwt_secret_key_here
+JWT_EXPIRE=7d
+
+# CORS - URL Frontend
+REACT_APP_URL=http://localhost:3001
+
+# Cấu hình Email (Nodemailer)
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASSWORD=your_app_password
+
+# Cấu hình VNPay
+VNP_TMNCODE=your_vnpay_merchant_code
+VNP_HASHSECRET=your_vnpay_hash_secret
+VNP_RETURNURL=http://localhost:3001/payment-success
+VNP_NOTIFYURL=http://localhost:5000/api/payment/vnpay-ipn
+
+# Google Generative AI (Chatbot)
+GOOGLE_API_KEY=your_google_generative_ai_key
+```
+
+**Chạy Server:**
+
+```bash
+# Development (với hot-reload)
+npm start
+```
+
+Server sẽ chạy tại `http://localhost:5000`
+
+### Bước 3: Cài Đặt Frontend
+
+Mở terminal mới, vào thư mục client và cài đặt dependencies:
+
+```bash
+cd client
+npm install
+```
+
+**Tạo file `.env` trong thư mục `client/`:**
+
+```env
+# Cấu hình API
+REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_SOCKET_URL=http://localhost:5000
+
+# Môi trường
+NODE_ENV=development
+```
+
+**Chạy Client:**
+
+```bash
+npm start
+```
+
+Ứng dụng sẽ tự động mở tại `http://localhost:3001`
+
+## Cấu Trúc Dự Án
+
+Dự án được tổ chức theo mô hình Client-Server với cấu trúc thư mục như sau:
+
+```
+web_shoe/
+│
+├── client/                          # Frontend (React)
+│   ├── public/
+│   │   ├── index.html
+│   │   └── manifest.json
+│   │
+│   ├── src/
+│   │   ├── Components/              # React Components tái sử dụng
+│   │   │   ├── Header.js
+│   │   │   ├── Navbar.js
+│   │   │   ├── Footer.js
+│   │   │   ├── ManageProducts.js
+│   │   │   ├── ManageOrder.js
+│   │   │   ├── ManagerUser.js
+│   │   │   └── ...
+│   │   │
+│   │   ├── Pages/                   # Các trang chính
+│   │   │   ├── Home.js
+│   │   │   ├── Login.js
+│   │   │   ├── RegisterUser.js
+│   │   │   ├── Cart.js
+│   │   │   ├── DetailProducts.js
+│   │   │   ├── Admin.js
+│   │   │   ├── PaymentSuccess.js
+│   │   │   └── ...
+│   │   │
+│   │   ├── Config/
+│   │   │   └── api.js               # Cấu hình API endpoints
+│   │   │
+│   │   ├── store/                   # State Management (Context API)
+│   │   │   ├── Context.js
+│   │   │   └── Provider.js
+│   │   │
+│   │   ├── hooks/                   # Custom Hooks
+│   │   │   ├── useDebounce.js
+│   │   │   └── useStore.js
+│   │   │
+│   │   ├── Styles/                  # SCSS/CSS Modules
+│   │   │   ├── Admin.module.scss
+│   │   │   ├── Cart.module.scss
+│   │   │   └── ...
+│   │   │
+│   │   ├── utils/                   # Utilities và Helper Functions
+│   │   │   ├── Modal/
+│   │   │   ├── HandleCart/
+│   │   │   ├── Chatbot/
+│   │   │   └── formatVietnamTime.js
+│   │   │
+│   │   ├── App.js
+│   │   └── index.js
+│   │
+│   ├── Dockerfile
+│   └── package.json
+│
+├── server/                          # Backend (Node.js/Express)
+│   ├── src/
+│   │   ├── Config/
+│   │   │   └── db.js                # Kết nối MongoDB
+│   │   │
+│   │   ├── controllers/             # Logic kinh doanh
+│   │   │   ├── productController.js
+│   │   │   ├── orderController.js
+│   │   │   ├── userController.js
+│   │   │   └── ...
+│   │   │
+│   │   ├── models/                  # MongoDB Models/Schemas
+│   │   │   ├── User.js
+│   │   │   ├── Product.js
+│   │   │   ├── Order.js
+│   │   │   └── ...
+│   │   │
+│   │   ├── routes/                  # API Routes
+│   │   │   ├── userRoutes.js
+│   │   │   ├── productRoutes.js
+│   │   │   ├── orderRoutes.js
+│   │   │   └── ...
+│   │   │
+│   │   ├── jwt/                     # JWT Authentication
+│   │   │   └── config.js
+│   │   │
+│   │   ├── SendMail/                # Email Service
+│   │   │   └── ...
+│   │   │
+│   │   ├── utils/                   # Utilities
+│   │   │   └── ...
+│   │   │
+│   │   ├── uploads/                 # Upload files
+│   │   │   └── ...
+│   │   │
+│   │   └── server.js                # Entry point
+│   │
+│   ├── public/
+│   │   └── images/
+│   │       └── products/
+│   │
+│   ├── Dockerfile
+│   └── package.json
+│
+├── BAO_CAO_CLIENT_SERVER.md         # Báo cáo chi tiết kiến trúc
+└── README.md
+```
+
+## Công Nghệ Sử Dụng
+
+Dự án sử dụng các công nghệ và thư viện hiện đại nhất để đảm bảo hiệu suất và tính bảo mật.
+
+### Frontend
+
+Danh sách các công nghệ chính được sử dụng ở phía Client:
+
+| Công Nghệ | Phiên Bản | Mục Đích |
+|-----------|---------|---------|
+| React | 18.3.1 | Framework chính cho UI |
+| React Router | 6.23.1 | Định tuyến giữa các trang |
+| React Redux | 9.1.2 | Quản lý trạng thái ứng dụng |
+| Axios | 1.7.2 | Client HTTP request |
+| Bootstrap | 5.3.3 | Thành phần UI và layout |
+| SCSS/SASS | 1.77.4 | Tiền xử lý CSS |
+| Chart.js | 4.4.4 | Vẽ biểu đồ thống kê |
+| Socket.io-client | 4.7.5 | Real-time communication |
+
+### Backend
+
+Danh sách các công nghệ chính được sử dụng ở phía Server:
+
+| Công Nghệ | Phiên Bản | Mục Đích |
+|-----------|---------|---------|
+| Express.js | 4.19.2 | Web framework chính |
+| MongoDB | 8.3.2 | Cơ sở dữ liệu NoSQL |
+| Mongoose | 8.3.2 | Object Data Mapper |
+| JWT | 9.0.2 | Xác thực người dùng |
+| Bcrypt | 5.1.1 | Mã hóa mật khẩu |
+| Nodemailer | 6.9.13 | Dịch vụ gửi email |
+| Multer | 1.4.5 | Xử lý tải file lên |
+| Socket.io | 4.7.5 | Real-time communication |
+| VNPay SDK | 2.1.1 | Gateway thanh toán |
+| Google Generative AI | 0.24.0 | Chatbot AI |
+
+## Cấu Hình Môi Trường
+
+### Backend `.env`
+
+File cấu hình cho máy chủ Express:
+
+```env
+# Server
+PORT=5000
+NODE_ENV=development
+
+# Database
+MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/web_shoe
+
+# JWT
+JWT_SECRET=your_secret_key_here
+JWT_EXPIRE=7d
+
+# Client URL
+REACT_APP_URL=http://localhost:3001
+
+# Email
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASSWORD=your_app_password
+
+# Payment
+VNP_TMNCODE=merchant_code
+VNP_HASHSECRET=hash_secret
+VNP_RETURNURL=http://localhost:3001/payment-success
+VNP_NOTIFYURL=http://localhost:5000/api/payment/vnpay-ipn
+
+# AI
+GOOGLE_API_KEY=your_api_key
+```
+
+### Frontend `.env`
+
+File cấu hình cho ứng dụng React:
+
+```env
+REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_SOCKET_URL=http://localhost:5000
+NODE_ENV=development
+```
+
+## API Endpoints
+
+### Authentication
+
+Các endpoint dành cho xác thực người dùng:
+
+```
+POST   /api/auth/register           - Đăng ký tài khoản mới
+POST   /api/auth/login              - Đăng nhập
+POST   /api/auth/logout             - Đăng xuất
+POST   /api/auth/refresh-token      - Làm mới token
+```
+
+### Products
+
+Các endpoint để quản lý sản phẩm:
+
+```
+GET    /api/products                - Lấy danh sách sản phẩm
+GET    /api/products/:id            - Lấy chi tiết sản phẩm
+POST   /api/products                - Tạo sản phẩm mới (Admin)
+PUT    /api/products/:id            - Cập nhật sản phẩm (Admin)
+DELETE /api/products/:id            - Xóa sản phẩm (Admin)
+```
+
+### Orders
+
+Các endpoint để quản lý đơn hàng:
+
+```
+GET    /api/orders                  - Lấy danh sách đơn hàng
+GET    /api/orders/:id              - Lấy chi tiết đơn hàng
+POST   /api/orders                  - Tạo đơn hàng mới
+PUT    /api/orders/:id              - Cập nhật đơn hàng
+```
+
+### Users
+
+Các endpoint để quản lý người dùng:
+
+```
+GET    /api/users                   - Danh sách người dùng (Admin)
+GET    /api/users/:id               - Chi tiết người dùng
+PUT    /api/users/:id               - Cập nhật thông tin người dùng
+DELETE /api/users/:id               - Xóa tài khoản (Admin)
+```
+
+### Payment
+
+Các endpoint xử lý thanh toán:
+
+```
+POST   /api/payment/create-vnpay    - Tạo link thanh toán VNPay
+GET    /api/payment/vnpay-return    - Xử lý callback từ VNPay
+```
+
+## Docker
+
+### Chạy với Docker Compose
+
+Để chạy toàn bộ ứng dụng với Docker, hãy làm theo các bước sau.
+
+**Bước 1: Tạo file `docker-compose.yml`** ở thư mục gốc:
+
+```yaml
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:latest
+    container_name: web_shoe_db
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongo_data:/data/db
+
+  # Backend Server
+  server:
+    build: ./server
+    container_name: web_shoe_server
+    ports:
+      - "5000:5000"
+    environment:
+      MONGODB_URI: mongodb://admin:password@mongodb:27017/web_shoe?authSource=admin
+      PORT: 5000
+      NODE_ENV: production
+      JWT_SECRET: your_secret_key
+      REACT_APP_URL: http://localhost:3001
+    depends_on:
+      - mongodb
+    networks:
+      - web_shoe_network
+
+  # Frontend Client
+  client:
+    build: ./client
+    container_name: web_shoe_client
+    ports:
+      - "3001:3000"
+    environment:
+      REACT_APP_API_URL: http://localhost:5000/api
+      REACT_APP_SOCKET_URL: http://localhost:5000
+    depends_on:
+      - server
+    networks:
+      - web_shoe_network
+
+volumes:
+  mongo_data:
+
+networks:
+  web_shoe_network:
+    driver: bridge
+```
+
+**Bước 2: Chạy ứng dụng:**
+
+```bash
+docker-compose up -d
+```
+
+**Bước 3: Dừng ứng dụng:**
+
+```bash
+docker-compose down
+```
+
+## Hướng Dẫn Chạy Nhanh
+
+### Mode Phát Triển (Local)
+
+Để chạy ứng dụng trên máy cục bộ mà không sử dụng Docker:
+
+```bash
+# Terminal 1 - Chạy Backend
+cd server
+npm install
+npm start
+
+# Terminal 2 - Chạy Frontend
+cd client
+npm install
+npm start
+```
+
+**Kết quả sau khi chạy:**
+- Frontend: http://localhost:3001
+- Backend API: http://localhost:5000
+
+### Mode Production (Docker)
+
+Để chạy ứng dụng với Docker:
+
+```bash
+# Build và chạy Docker containers
+docker-compose up --build
+
+# Hoặc chạy ở chế độ nền (background)
+docker-compose up -d
+```
+
+## Script Hữu Ích
+
+### Backend Scripts
+
+Các lệnh có sẵn trong thư mục server:
+
+```bash
+# Cài đặt dependencies
+npm install
+
+# Chạy server (development mode)
+npm start
+
+# Khởi tạo cơ sở dữ liệu
+node seed.js
+
+# Tạo hình ảnh placeholder
+node create-placeholder-images.js
+```
+
+### Frontend Scripts
+
+Các lệnh có sẵn trong thư mục client:
+
+```bash
+# Cài đặt dependencies
+npm install
+
+# Chạy development server
+npm start
+
+# Build cho production
+npm run build
+
+# Chạy tests
+npm test
+```
+
+## Bảo Mật
+
+Dự án sử dụng các biện pháp bảo mật theo tiêu chuẩn:
+
+- **JWT Token Authentication** - Xác thực người dùng bằng JSON Web Tokens
+- **Password Hashing** - Mã hóa mật khẩu sử dụng Bcrypt
+- **CORS Configuration** - Cấu hình chia sẻ tài nguyên giữa các domain
+- **Environment Variables** - Lưu trữ thông tin nhạy cảm an toàn
+- **Cookie Parser** - Xử lý cookie an toàn
+- **Body Parser Validation** - Xác thực dữ liệu đầu vào
+
+## Tính Năng Responsive
+
+Ứng dụng được thiết kế để hoạt động tốt trên tất cả các thiết bị:
+
+- **Mobile-first Design** - Thiết kế ưu tiên thiết bị di động
+- **Bootstrap Grid System** - Hệ thống grid linh hoạt
+- **Responsive Images** - Hình ảnh tự động điều chỉnh
+- **Touch-friendly UI** - Giao diện thân thiện với cảm ứng
+
+## Xử Lý Sự Cố
+
+### Lỗi Kết Nối MongoDB
+
+Nếu bạn gặp lỗi kết nối MongoDB:
+
+```
+Lỗi: Cannot connect to MongoDB
+```
+
+**Giải pháp:**
+- Kiểm tra giá trị MONGODB_URI trong file .env
+- Đảm bảo MongoDB đang chạy (nếu chạy local)
+- Kiểm tra tên đăng nhập và mật khẩu
+- Nếu dùng MongoDB Atlas, kiểm tra IP whitelist
+
+### Lỗi Port Đã Được Sử Dụng
+
+Nếu cổng 3001 hoặc 5000 đã được chiếm giữ:
+
+```
+Lỗi: Port 3001 / 5000 already in use
+```
+
+**Giải pháp:**
+- Thay đổi PORT trong file .env
+- Hoặc dừng quá trình đang sử dụng cổng đó
+
+### Lỗi CORS
+
+Nếu gặp lỗi CORS policy:
+
+```
+Lỗi: CORS policy error
+```
+
+**Giải pháp:**
+- Kiểm tra REACT_APP_URL trong file .env của backend
+- Đảm bảo frontend và backend cùng domain/port hoặc CORS được cấu hình đúng
+
+## Đóng Góp
+
+Chúng tôi hoan nghênh các đóng góp từ cộng đồng. Để đóng góp:
+
+1. Fork repository
+2. Tạo branch mới cho feature của bạn (git checkout -b feature/AmazingFeature)
+3. Commit các thay đổi (git commit -m 'Add some AmazingFeature')
+4. Push lên branch (git push origin feature/AmazingFeature)
+5. Mở Pull Request
+
+## License
+
+Dự án này được cấp phép dưới MIT License. Xem file LICENSE để biết chi tiết.
+
+## Liên Hệ & Hỗ Trợ
+
+Nếu bạn có câu hỏi hoặc cần hỗ trợ, vui lòng liên hệ:
+
+- Email: support@webshoe.com
+- Facebook: https://facebook.com/webshoe
+- Website: https://webshoe.com
+- Hotline: 1900-1000
+
+## Lịch Sử Phiên Bản
+
+### v1.0.0 (2026-05-27)
+- Khởi chạy dự án
+- Tính năng authentication và quản lý người dùng
+- Quản lý sản phẩm và danh mục
+- Quản lý đơn hàng và thanh toán VNPay
+- Admin Dashboard với thống kê
+- Chatbot AI hỗ trợ khách hàng
+- Real-time notifications với Socket.io
+
+---
+
+**Cảm ơn bạn đã sử dụng Web Shoe!**
