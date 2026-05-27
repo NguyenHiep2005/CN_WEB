@@ -1,0 +1,255 @@
+.manage-statistics {
+    width: 100%;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+
+    h4 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+    }
+}
+
+.loading,
+.error,
+.no-data {
+    text-align: center;
+    font-size: 16px;
+    padding: 40px;
+    color: #666;
+}
+
+.error {
+    color: #d32f2f;
+}
+
+.retry-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: #0b5ed7;
+    }
+}
+
+.statistics-info {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+    p {
+        margin: 0;
+        font-size: 14px;
+        color: #555;
+
+        strong {
+            color: #333;
+            font-weight: 600;
+        }
+    }
+}
+
+.daily-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.daily-item {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s ease;
+
+    &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.daily-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background-color: #f5f5f5;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-left: 4px solid #0d6efd;
+
+    &:hover {
+        background-color: #eeeeee;
+    }
+}
+
+.date-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.date-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+.product-count {
+    font-size: 13px;
+    color: #999;
+}
+
+.toggle-icon {
+    font-size: 12px;
+    color: #999;
+    transition: transform 0.3s ease;
+    display: inline-block;
+
+    &.expanded {
+        transform: rotateZ(0deg);
+    }
+}
+
+.daily-products {
+    padding: 20px;
+    border-top: 1px solid #eee;
+    background-color: #fafafa;
+}
+
+.products-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+    font-size: 14px;
+
+    thead {
+        background-color: #f0f0f0;
+
+        tr {
+            border-bottom: 2px solid #ddd;
+
+            th {
+                padding: 12px 8px;
+                text-align: left;
+                font-weight: 600;
+                color: #555;
+            }
+        }
+    }
+
+    tbody {
+        tr {
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s ease;
+
+            &:hover {
+                background-color: #f9f9f9;
+            }
+
+            td {
+                padding: 12px 8px;
+                color: #666;
+            }
+        }
+    }
+}
+
+.quantity,
+.total {
+    text-align: right;
+    font-weight: 500;
+    color: #333;
+}
+
+.daily-summary {
+    background-color: white;
+    padding: 12px 15px;
+    border-radius: 6px;
+    border-left: 3px solid #0d6efd;
+    display: flex;
+    justify-content: space-around;
+
+    p {
+        margin: 0;
+        font-size: 13px;
+        color: #555;
+
+        strong {
+            display: block;
+            font-size: 15px;
+            color: #0d6efd;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+    }
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    padding: 15px 0;
+}
+
+/* Responsive Design */
+@media only screen and (max-width: 768px) {
+    .manage-statistics {
+        padding: 15px;
+
+        h4 {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+    }
+
+    .daily-header {
+        padding: 12px 15px;
+    }
+
+    .date-label {
+        font-size: 13px;
+    }
+
+    .product-count {
+        font-size: 12px;
+    }
+
+    .daily-products {
+        padding: 15px;
+    }
+
+    .products-table {
+        font-size: 12px;
+
+        thead th {
+            padding: 8px 6px;
+        }
+
+        tbody td {
+            padding: 8px 6px;
+        }
+    }
+
+    .daily-summary {
+        flex-direction: column;
+        gap: 10px;
+
+        p {
+            text-align: center;
+        }
+    }
+}

@@ -1,0 +1,22 @@
+/* Global styles for react-slick alignment - Left align */
+
+.slick-slider {
+    text-align: left !important;
+    direction: ltr !important;
+}
+
+.slick-list {
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+}
+
+.slick-track {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+    transform: translate3d(0, 0, 0) !important;
+}
+
+.slick-slide {
+    float: left !important;
+}
